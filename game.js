@@ -1,3 +1,10 @@
+$(document).on("touchstart", function () {
+  $("body").addClass("screen-touched");
+  setTimeout(function () {
+    $("body").removeClass("screen-touched");
+  }, 200);
+});
+
 var buttonColours = ["red", "blue", "green", "yellow"];
 
 var gamePattern = [];
@@ -6,7 +13,11 @@ var userClickedPattern = [];
 var started = false;
 var level = 0;
 
-$(document).keypress(function () {
+$(document).on("keypress touchstart", function (e) {
+  if (e.type === "touchstart") {
+    e.preventDefault();
+  }
+
   if (!started) {
     $("#level-title").text("Level " + level);
     nextSequence();
@@ -43,7 +54,7 @@ function checkAnswer(currentLevel) {
       $("body").removeClass("game-over");
     }, 200);
 
-    $("#level-title").text("Game Over, Press Any Key to Restart");
+    $("#level-title").text("Game Over, Press Any Key or touch to Restart");
 
     startOver();
   }
@@ -74,11 +85,15 @@ function animatePress(currentColor) {
   $("#" + currentColor).addClass("pressed");
   setTimeout(function () {
     $("#" + currentColor).removeClass("pressed");
-  }, 100);
+  }, 150);
 }
 
 function startOver() {
   level = 0;
   gamePattern = [];
   started = false;
+}
+
+if (navigator.vibrate) {
+  navigator.vibrate(50);
 }
